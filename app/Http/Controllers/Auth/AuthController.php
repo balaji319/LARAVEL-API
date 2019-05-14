@@ -80,7 +80,6 @@ class AuthController extends Controller
             $ip = $this->clientIp();
             $user_agent = $request->server('HTTP_USER_AGENT');
             $contact_logging = new X5ContactLoginLog;
-
             /*authentication Faillure*/
             if(!Auth::attempt($credentials)){
 
@@ -91,7 +90,6 @@ class AuthController extends Controller
 
             /*Auth Success*/
             $user = $request->user();
-            exit();
 
 
             /*add logging*/
