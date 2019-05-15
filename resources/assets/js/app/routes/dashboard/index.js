@@ -58,14 +58,6 @@ function Transition(props) {
   return <Slide direction="down" {...props} />;
 }
 import {
-  announcementsNotification,
-  appNotification,
-  article,
-  authors,
-  chartData,
-  lineChartData,
-  marketingData,
-  pieChartData,
   with_inbound_data,
   PRESETstats_data,
   DROPINGROUPstats_data,
@@ -76,21 +68,7 @@ import {
 } from "./data";
 
 import ReportBox from "../../../components/ReportBox/index";
-import InfoCard from "../../../components/InfoCard";
-import InFoWithBgImage from "../../../components/InFoWithBgImage";
-import SimpleToDo from "../../../components/ToDoCard/index";
-import UserDetailTable from "../../../components/dashboard/Common/UserDetailTable";
-import UserProfileCard from "../../../components/dashboard/Common/userProfileCard/UserProfileCard";
-import MarketingTable from "../../../components/dashboard/Common/MarketingTable";
-import RecentActivities from "../../../components/dashboard/Common/RecentActivities/index";
 
-import ProjectsList from "../../../components/dashboard/Common/ProjectsList";
-import CountryListBadges from "../../../components/dashboard/Common/CountryListBadges";
-import WeatherList from "../../../components/dashboard/Common/WeatherList";
-
-import ContainerHeader from "../../../components/ContainerHeader/index";
-import CardHeader from "../../../components/dashboard/Common/CardHeader/index";
-import IntlMessages from "../../../util/IntlMessages";
 import { Paper } from "@material-ui/core";
 import CardBox from "../../../components/CardBox";
 import FormControl from "@material-ui/core/FormControl";
@@ -106,6 +84,8 @@ import ListItemText from "@material-ui/core/ListItemText";
 var ar_refresh = 10;
 var ar_seconds = 10;
 var $start_count = 0;
+var $timeOutCounter;
+var $timeOutCounter1;
 
 const styles = theme => ({
   root: {
@@ -306,6 +286,15 @@ class Dashboard extends Component {
 
     //this.getData();
   }
+
+  componentWillUnmount() {
+
+    clearTimeout($timeOutCounter);
+    clearTimeout($timeOutCounter1);
+    document.removeEventListener("click", this.closeMenu);
+}
+
+
   componentWillReceiveProps(nextPropsFromRedux) {
     this.setState({
       items: nextPropsFromRedux.Global.agentgroup_custom
@@ -348,7 +337,8 @@ class Dashboard extends Component {
       console.log("ar_seconds Less than 0");
       ar_seconds = ar_seconds - 1;
       //setTimeout(this.realtime_refresh_display(), 10000);
-      setTimeout(() => {
+
+       $timeOutCounter =setTimeout(() => {
         this.realtime_refresh_display();
       }, 1000);
     } else {
@@ -356,7 +346,7 @@ class Dashboard extends Component {
       ar_seconds = ar_refresh;
       this.gather_realtime_content();
       //setTimeout(this.realtime_refresh_display(), 10000);
-      setTimeout(() => {
+      $timeOutCounter1= setTimeout(() => {
         this.realtime_refresh_display();
       }, 1000);
       //  setTimeout(this.realtime_refresh_display(), 10000);
@@ -513,7 +503,7 @@ class Dashboard extends Component {
                   ? res.data.data.stat_table
                   : []
               });
-              console.log("AAAAAAAAAAAa");
+
               console.log(_this.state.agents_call_list);
             })
             .catch(function(error) {
