@@ -1,22 +1,43 @@
+import React from "react";
+import ReactDOM from "react-dom";
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+window.axios = require("axios");
 
-require('./bootstrap');
+const rootEl = document.getElementById("app");
 
-window.Vue = require('vue');
+let auth_token = localStorage.getItem("access_token");
+if (auth_token) {
+  axios.defaults.headers.common["Content-Type"] = "application/json";
+  axios.defaults.headers.common["Authorization"] = "Bearer " + auth_token;
+  axios.defaults.baseURL = "https://balaji-m360portal.message360.com";
+}
+axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.baseURL = "https://balaji-m360portal.message360.com";
+axios.defaults.Origin = "https://balaji-m360portal.message360.com";
+axios.defaults.Referer = "https://balaji-m360portal.message360.com";
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+var { registerObserver } = require("react-perf-devtool");
 
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+// Simple, no?
+registerObserver();
+var length = document.querySelectorAll(".app-login-container").length;
+var el = document.getElementById("app");
+length > 0
+  ? (el.className += "Ycc-login-bg")
+  : el.classList.remove("Ycc-login-bg");
 
-const app = new Vue({
-    el: '#app'
-});
+// Create a reusable render method that we can call more than once
+let render = () => {
+  // Dynamically import our main App component, and render it
+  const MainApp = require("./MainApp").default;
+  ReactDOM.render(<MainApp />, rootEl);
+};
+
+if (module.hot) {
+  module.hot.accept("./MainApp", () => {
+    const NextApp = require("./MainApp").default;
+    render(<NextApp />, rootEl);
+  });
+}
+
+render();
